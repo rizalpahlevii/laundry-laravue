@@ -18,6 +18,9 @@ import IndexProduct from "./pages/products/Index.vue";
 import DataProduct from "./pages/products/Product.vue";
 import AddProduct from './pages/products/Add.vue'
 import EditProduct from './pages/products/Edit.vue'
+// setting
+import Setting from './pages/setting/Index.vue'
+import SetPermission from './pages/setting/roles/SetPermission.vue'
 
 Vue.use(Router);
 
@@ -108,6 +111,19 @@ const router = new Router({
                     component: EditProduct,
                     meta: { title: 'Edit Product' }
                 },
+            ]
+        },
+        {
+            path: '/setting',
+            component: Setting,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: 'role-permission',
+                    name: 'role.permissions',
+                    component: SetPermission,
+                    meta: { title: 'Set Permissions' }
+                }
             ]
         }
     ]

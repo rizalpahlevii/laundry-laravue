@@ -5,6 +5,7 @@ import auth from "./stores/auth.js";
 import outlet from "./stores/outlet.js";
 import courier from "./stores/courier.js";
 import product from "./stores/product.js";
+import user from "./stores/user.js";
 
 Vue.use(Vuex);
 
@@ -12,7 +13,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     // semua module yang dibuat akan ditetapkan didalam bagian ini dan dipisahkan dengan koma untuk setipa module-nya
     modules: {
-        auth, outlet, courier, product
+        auth, outlet, courier, product, user
     },
 
 
