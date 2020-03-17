@@ -15,6 +15,7 @@
                         <li v-if="$can('read outlets')"><router-link :to="{ name: 'outlets.data' }">Outlets</router-link></li>
                         <li v-if="$can('read couriers')"><router-link :to="{ name: 'couriers.data' }">Couriers</router-link></li>
                         <li v-if="$can('read products')"><router-link :to="{ name: 'products.data' }">Products</router-link></li>
+                        <li><router-link :to="{ name: 'expenses.data' }">Expenses</router-link></li>
                         <li class="dropdown" v-if="authenticated.role == 0">
                             <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Settings <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -31,23 +32,37 @@
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
                        
-                        <li class="dropdown notifications-menu">
+                        <li class="dropdown messages-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning">10</span>
+                                
+                                <!-- FUNGSI INI UNTUK MENGHITUNG JUMLAH DATA NOTIFIKASI YANG ADA -->
+                                <span class="label label-success">{{ notifications.length }}</span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li class="header">You have 10 notifications</li>
+                                <li class="header">You have {{ notifications.length }} messages</li>
                                 <li>
-                                    <ul class="menu">
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                    <ul class="menu" v-if="notifications.length > 0">
+                                        
+                                        <!-- KITA MELAKUKAN LOOPING TERHADAP DATA NOTIFIKASI YANG DISIMPAN KE DALAM STATE NOTIFICATIONS -->
+                                        <li v-for="(row, index) in notifications" :key="index">
+                                            <a href="javascript:void(0)" @click="readNotif(row)">
+                                                <div class="pull-left">
+                                                    <img src="https://via.placeholder.com/160" class="img-circle" alt="User Image">
+                                                </div>
+                                                <h4>
+                                                    <!-- TAMPILKAN NAMA PENGIRIM NOTIFIKASI -->
+                                                    {{ row.data.sender_name }}
+                                                    <!-- TAMPILKAN WAKTU NOTIFIKASI -->
+                                                    <small><i class="fa fa-clock-o"></i> {{ row.created_at | formatDate }}</small>
+                                                </h4>
+                                                <!-- TAMPILKAN JENIS PERMINTAAN NOTIFIKASI -->
+                                                <p>{{ row.data.expenses.description.substr(0, 30) }}</p>
                                             </a>
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="footer"><a href="#">View all</a></li>
+                                <!-- <li class="footer"><a href="#">See All Messages</a></li> -->
                             </ul>
                         </li>
                         <li class="dropdown user user-menu">
@@ -82,23 +97,37 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import moment from 'moment'
 export default {
     computed: {
         ...mapState('user', {
-            authenticated: state => state.authenticated //ME-LOAD STATE AUTHENTICATED
+            authenticated: state => state.authenticated 
+        }),
+
+        ...mapState('notification',{
+            notifications: state =>state.notifications
         })
     },
+    filters:{
+        formatDate(val){
+            return moment(new Date(val)).fromNow()
+        }
+    },
     methods: {
-        //KETIKA TOMBOL LOGOUT DITEKAN, FUNGSI INI DIJALANKAN
+        ...mapActions('notification', ['readNotification']), 
+
+        readNotif(row) {
+            this.readNotification({ id: row.id}).then(() => this.$router.push({ name: 'expenses.view', params: {id: row.data.expenses.id} }))
+        },
+
         logout() {
             return new Promise((resolve, reject) => {
-                localStorage.removeItem('token') //MENGHAPUS TOKEN DARI LOCALSTORAGE
-                resolve()
+                localStorage.removeItem('token');
+                resolve();
             }).then(() => {
-                //MEMPERBAHARUI STATE TOKEN
-                this.$store.state.token = localStorage.getItem('token')
-                this.$router.push('/login') //REDIRECT KE PAGE LOGIN
+                this.$store.state.token = localStorage.getItem('token');
+                this.$router.push('/login') ;
             })
         }
     }

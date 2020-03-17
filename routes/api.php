@@ -36,4 +36,11 @@ Route::group(['middleware' => 'auth:api'], function () use ($router) {
     $router->post('set-role-user', 'API\RolePermissionController@setRoleUser')->name('user.set_role');
     $router->get('user-authenticated', 'API\UserController@getUserLogin')->name('user.authenticated');
     $router->get('user-lists', 'API\UserController@userLists')->name('user.index');
+
+
+    // expenses
+    $router->resource('expenses','API\ExpensesController')->except(['create','show']);
+    $router->resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
+    $router->post('expenses/accept', 'API\ExpensesController@accept')->name('expenses.accept');
+    $router->post('expenses/cancel', 'API\ExpensesController@cancelRequest')->name('expenses.cancel');
 });
