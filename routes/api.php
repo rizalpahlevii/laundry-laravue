@@ -39,8 +39,10 @@ Route::group(['middleware' => 'auth:api'], function () use ($router) {
 
 
     // expenses
-    $router->resource('expenses','API\ExpensesController')->except(['create','show']);
+    $router->resource('expenses', 'API\ExpensesController')->except(['create', 'show']);
     $router->resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
     $router->post('expenses/accept', 'API\ExpensesController@accept')->name('expenses.accept');
     $router->post('expenses/cancel', 'API\ExpensesController@cancelRequest')->name('expenses.cancel');
+
+    $router->resource('customer', 'API\CustomerController')->except(['create', 'show']);
 });
