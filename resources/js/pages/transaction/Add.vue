@@ -7,8 +7,17 @@
             <div class="panel-body">
                 <transaction-form ref="form"></transaction-form>
                 <div class="form-group">
-                    <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit">
+                    <button
+                        class="btn btn-primary btn-sm btn-flat"
+                        @click.prevent="submit"
+                    >
                         <i class="fa fa-save"></i> Create Transaction
+                    </button>
+                    <button
+                        class="btn btn-danger btn-sm btn-flat"
+                        @click.prevent="clearForm"
+                    >
+                        Clear Form
                     </button>
                 </div>
             </div>
@@ -16,18 +25,21 @@
     </div>
 </template>
 <script>
-    import { mapActions, mapState, mapMutations } from 'vuex'
-    import FormTransaction from './Form.vue'
-    export default {
-        name: 'AddTransaction',
-        methods: {
-            //KETIKA TOMBOL CREATE TRANSACTION DITEKAN MAKA AKAN MENJALAN METHOD INI
-            submit() {
-                this.$refs.form.submit() //DIMANA KITA MENGINSTRUKSIKAN UNTUK MENJALANKAN METHOD submit() PADA FILE FORM.VUE MELALUI REFS
-            }
+import { mapActions, mapState, mapMutations } from "vuex";
+import FormTransaction from "./Form.vue";
+export default {
+    name: "AddTransaction",
+    methods: {
+        //KETIKA TOMBOL CREATE TRANSACTION DITEKAN MAKA AKAN MENJALAN METHOD INI
+        submit() {
+            this.$refs.form.submit(); //DIMANA KITA MENGINSTRUKSIKAN UNTUK MENJALANKAN METHOD submit() PADA FILE FORM.VUE MELALUI REFS
         },
-        components: {
-            'transaction-form': FormTransaction
+        clearForm() {
+            this.$refs.form.resetForm();
         }
+    },
+    components: {
+        "transaction-form": FormTransaction
     }
+};
 </script>
