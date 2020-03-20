@@ -45,4 +45,5 @@ Route::group(['middleware' => 'auth:api'], function () use ($router) {
     $router->post('expenses/cancel', 'API\ExpensesController@cancelRequest')->name('expenses.cancel');
 
     $router->resource('customer', 'API\CustomerController')->except(['create', 'show']);
+    $router->resource('transaction', 'API\TransactionController')->except(['create', 'show']);
 });

@@ -1,20 +1,20 @@
 import axios from "axios";
-import store from './store.js' //IMPORT BAGIAN INI
+import store from "./store.js"; //IMPORT BAGIAN INI
 
 const $axios = axios.create({
-    baseURL: '/api',
+    baseURL: "/api",
     headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
     }
 });
 
 $axios.interceptors.request.use(
-    function (config) {
-        const token = store.state.token
+    function(config) {
+        const token = store.state.token;
         if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
-    function (error) {
+    function(error) {
         return Promise.reject(error);
     }
 );

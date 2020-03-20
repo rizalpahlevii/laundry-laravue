@@ -27,6 +27,7 @@
         "pusher-js": "^5.1.1",
         "vue": "^2.6.11",
         "vue-router": "^3.1.6",
+        "vue-select": "^3.9.3",
         "vue-sweetalert2": "^3.0.3",
         "vuex": "^3.1.3"
     }

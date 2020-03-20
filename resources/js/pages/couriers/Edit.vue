@@ -7,7 +7,10 @@
             <div class="panel-body">
                 <courier-form ref="courierForm"></courier-form>
                 <div class="form-group">
-                    <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit">
+                    <button
+                        class="btn btn-primary btn-sm btn-flat"
+                        @click.prevent="submit"
+                    >
                         <i class="fa fa-save"></i> Update
                     </button>
                 </div>
@@ -16,17 +19,17 @@
     </div>
 </template>
 <script>
-    import { mapActions, mapState } from 'vuex'
-    import FormCourier from './Form.vue'
-    export default {
-        name: 'EditCourier',
-        methods: {
-            submit() {
-                this.$refs.courierForm.submit()
-            }
-        },
-        components: {
-            'courier-form': FormCourier
-        },
+import { mapActions, mapState } from "vuex";
+import FormCourier from "./Form.vue";
+export default {
+    name: "EditCourier",
+    methods: {
+        submit() {
+            this.$refs.courierForm.submit();
+        }
+    },
+    components: {
+        "courier-form": FormCourier
     }
+};
 </script>

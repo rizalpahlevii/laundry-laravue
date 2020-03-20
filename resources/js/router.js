@@ -5,211 +5,228 @@ import Login from "./pages/Login.vue";
 import store from "./store.js";
 // outlet
 import IndexOutlet from "./pages/outlets/Index.vue";
-import DataOutlet from './pages/outlets/Outlet.vue'
-import AddOutlet from './pages/outlets/Add.vue'
-import EditOutlet from './pages/outlets/Edit.vue'
+import DataOutlet from "./pages/outlets/Outlet.vue";
+import AddOutlet from "./pages/outlets/Add.vue";
+import EditOutlet from "./pages/outlets/Edit.vue";
 // courier
-import IndexCourier from './pages/couriers/Index.vue'
-import DataCourier from './pages/couriers/Courier.vue'
-import AddCouriers from './pages/couriers/Add.vue'
-import EditCouriers from './pages/couriers/Edit.vue'
+import IndexCourier from "./pages/couriers/Index.vue";
+import DataCourier from "./pages/couriers/Courier.vue";
+import AddCouriers from "./pages/couriers/Add.vue";
+import EditCouriers from "./pages/couriers/Edit.vue";
 // product
 import IndexProduct from "./pages/products/Index.vue";
 import DataProduct from "./pages/products/Product.vue";
-import AddProduct from './pages/products/Add.vue'
-import EditProduct from './pages/products/Edit.vue'
+import AddProduct from "./pages/products/Add.vue";
+import EditProduct from "./pages/products/Edit.vue";
 // setting
-import Setting from './pages/setting/Index.vue'
-import SetPermission from './pages/setting/roles/SetPermission.vue'
+import Setting from "./pages/setting/Index.vue";
+import SetPermission from "./pages/setting/roles/SetPermission.vue";
 // expenses
-import IndexExpenses from './pages/expenses/Index.vue'
-import DataExpenses from './pages/expenses/Expenses.vue'
-import CreateExpenses from './pages/expenses/Add.vue'
-import ViewExpenses from './pages/expenses/View.vue'
-import EditExpenses from './pages/expenses/Edit.vue'
+import IndexExpenses from "./pages/expenses/Index.vue";
+import DataExpenses from "./pages/expenses/Expenses.vue";
+import CreateExpenses from "./pages/expenses/Add.vue";
+import ViewExpenses from "./pages/expenses/View.vue";
+import EditExpenses from "./pages/expenses/Edit.vue";
 
 // customer
-import IndexCustomer from './pages/customers/Index.vue'
-import DataCustomer from './pages/customers/Customer.vue'
-import AddCustomer from './pages/customers/Add.vue'
-import EditCustomer from './pages/customers/Edit.vue'
+import IndexCustomer from "./pages/customers/Index.vue";
+import DataCustomer from "./pages/customers/Customer.vue";
+import AddCustomer from "./pages/customers/Add.vue";
+import EditCustomer from "./pages/customers/Edit.vue";
+
+// transactions
+import IndexTransaction from "./pages/transaction/Index.vue";
+import AddTransaction from "./pages/transaction/Add.vue";
+
 Vue.use(Router);
 
 const router = new Router({
-    mode: 'history',
+    mode: "history",
     routes: [
         {
-            path: '/',
-            name: 'home',
+            path: "/",
+            name: "home",
             component: Home,
             meta: { requiresAuth: true }
         },
         {
-            path: '/login',
-            name: 'login',
+            path: "/login",
+            name: "login",
             component: Login
         },
         {
-            path: '/outlets',
+            path: "/outlets",
             component: IndexOutlet,
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: '',
-                    name: 'outlets.data',
+                    path: "",
+                    name: "outlets.data",
                     component: DataOutlet,
-                    meta: { title: 'Manage Outlet' }
+                    meta: { title: "Manage Outlet" }
                 },
                 {
-                    path: 'add',
-                    name: 'outlets.add',
+                    path: "add",
+                    name: "outlets.add",
                     component: AddOutlet,
-                    meta: { title: 'Add New Outlet' }
+                    meta: { title: "Add New Outlet" }
                 },
                 {
-                    path: 'edit/:id',
-                    name: 'outlets.edit',
+                    path: "edit/:id",
+                    name: "outlets.edit",
                     component: EditOutlet,
-                    meta: { title: 'Edit Outlet' }
+                    meta: { title: "Edit Outlet" }
                 }
             ]
         },
         {
-            path: '/couriers',
+            path: "/couriers",
             component: IndexCourier,
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: '',
-                    name: 'couriers.data',
+                    path: "",
+                    name: "couriers.data",
                     component: DataCourier,
-                    meta: { title: 'Manage Couriers' }
+                    meta: { title: "Manage Couriers" }
                 },
                 {
-                    path: 'add',
-                    name: 'couriers.add',
+                    path: "add",
+                    name: "couriers.add",
                     component: AddCouriers,
-                    meta: { title: 'Add New Courier' }
+                    meta: { title: "Add New Courier" }
                 },
                 {
-                    path: 'edit/:id',
-                    name: 'couriers.edit',
+                    path: "edit/:id",
+                    name: "couriers.edit",
                     component: EditCouriers,
-                    meta: { title: 'Edit Courier' }
-                },
+                    meta: { title: "Edit Courier" }
+                }
             ]
         },
         {
-            path: '/product',
+            path: "/product",
             component: IndexProduct,
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: '',
-                    name: 'products.data',
+                    path: "",
+                    name: "products.data",
                     component: DataProduct,
-                    meta: { title: 'Manage Products' }
+                    meta: { title: "Manage Products" }
                 },
                 {
-                    path: 'add',
-                    name: 'products.add',
+                    path: "add",
+                    name: "products.add",
                     component: AddProduct,
-                    meta: { title: 'Add New Product' }
+                    meta: { title: "Add New Product" }
                 },
                 {
-                    path: 'edit/:id',
-                    name: 'products.edit',
+                    path: "edit/:id",
+                    name: "products.edit",
                     component: EditProduct,
-                    meta: { title: 'Edit Product' }
+                    meta: { title: "Edit Product" }
                 }
             ]
         },
         {
-            path: '/setting',
+            path: "/setting",
             component: Setting,
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: 'role-permission',
-                    name: 'role.permissions',
+                    path: "role-permission",
+                    name: "role.permissions",
                     component: SetPermission,
-                    meta: { title: 'Set Permissions' }
+                    meta: { title: "Set Permissions" }
                 }
             ]
         },
         {
-            path: '/expenses',
+            path: "/expenses",
             component: IndexExpenses,
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: '',
-                    name: 'expenses.data',
+                    path: "",
+                    name: "expenses.data",
                     component: DataExpenses,
-                    meta: { title: 'Manage Expenses' }
+                    meta: { title: "Manage Expenses" }
                 },
                 {
-                    path: 'add',
-                    name: 'expenses.create',
+                    path: "add",
+                    name: "expenses.create",
                     component: CreateExpenses,
-                    meta: { title: 'Add New Expenses' }
+                    meta: { title: "Add New Expenses" }
                 },
                 {
-                    path: 'edit/:id',
-                    name: 'expenses.edit',
+                    path: "edit/:id",
+                    name: "expenses.edit",
                     component: EditExpenses,
-                    meta: { title: 'Edit Expenses' }
+                    meta: { title: "Edit Expenses" }
                 },
                 ,
                 {
-                    path: 'view/:id',
-                    name: 'expenses.view',
+                    path: "view/:id",
+                    name: "expenses.view",
                     component: ViewExpenses,
-                    meta: { title: 'View Expenses' }
-                },
+                    meta: { title: "View Expenses" }
+                }
             ]
         },
         {
-            path: '/customers',
+            path: "/customers",
             component: IndexCustomer,
             meta: { requiresAuth: true },
             children: [
                 {
-                    path: '',
-                    name: 'customers.data',
+                    path: "",
+                    name: "customers.data",
                     component: DataCustomer,
-                    meta: { title: 'Manage Customers' }
+                    meta: { title: "Manage Customers" }
                 },
                 {
-                    path: 'add',
-                    name: 'customers.add',
+                    path: "add",
+                    name: "customers.add",
                     component: AddCustomer,
-                    meta: { title: 'Add New Customers' }
+                    meta: { title: "Add New Customers" }
                 },
                 {
-                    path: 'edit/:id',
-                    name: 'customers.edit',
+                    path: "edit/:id",
+                    name: "customers.edit",
                     component: EditCustomer,
-                    meta: { title: 'Edit Customer' }
-                },
+                    meta: { title: "Edit Customer" }
+                }
+            ]
+        },
+        {
+            path: "/transactions",
+            component: IndexTransactions,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: "create",
+                    name: "transactions.add",
+                    component: AddTransaction,
+                    meta: { title: "Create New Transactions" }
+                }
             ]
         }
     ]
 });
 
 router.beforeEach((to, from, next) => {
-    store.commit('CLEAR_ERRORS');
+    store.commit("CLEAR_ERRORS");
     if (to.matched.some(record => record.meta.requiresAuth)) {
         let auth = store.getters.isAuth;
         if (auth) {
             next();
         } else {
-            next({ name: 'login' });
+            next({ name: "login" });
         }
     } else {
         next();
     }
 });
-
 
 export default router;
