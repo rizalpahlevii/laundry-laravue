@@ -46,4 +46,5 @@ Route::group(['middleware' => 'auth:api'], function () use ($router) {
 
     $router->resource('customer', 'API\CustomerController')->except(['create', 'show']);
     $router->resource('transaction', 'API\TransactionController')->except(['create', 'show']);
+    $router->post('transaction/complete-item', 'API\TransactionController@completeItem');
 });

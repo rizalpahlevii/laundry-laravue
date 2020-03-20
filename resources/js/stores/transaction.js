@@ -3,6 +3,7 @@ import $axios from "../api.js";
 const state = () => ({
     customers: [],
     products: [],
+    transactions: [],
     page: 1
 });
 
@@ -15,6 +16,9 @@ const mutations = {
     },
     SET_PAGE(state, payload) {
         state.page = payload;
+    },
+    ASSIGN_TRANSACTION(state, payload) {
+        state.transaction = payload;
     }
 };
 
@@ -50,6 +54,23 @@ const actions = {
             $axios.post(`/transaction`, payload).then(response => {
                 resolve(response.data);
             });
+        });
+    },
+    detailTransaction({ commit }, payload) {
+        return new Promise((resolve, reject) => {
+            $axios.get(`/transaction/${payload}/edit`).then(response => {
+                commit("ASSIGN_TRANSACTION", response.data);
+                resolve(response.data);
+            });
+        });
+    },
+    completeItem({ commit }, payload) {
+        return new Promise((resolve, reject) => {
+            $axios
+                .post(`/transaction/complete-item`, payload)
+                .then(response => {
+                    resolve(response.data);
+                });
         });
     }
 };

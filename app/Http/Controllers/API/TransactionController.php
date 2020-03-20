@@ -20,11 +20,12 @@ class TransactionController extends Controller
         DB::beginTransaction();
         try {
             $user = $request->user();
-            $transaction = Transaction::create([
-                'customer_id' => $request->customer_id,
-                'user_id' => $request->user_id,
-                'amount' => 0
-            ]);
+            $transaction = new Transaction();
+            $transaction->customer_id = $request->customer_id['id'];
+            $transaction->user_id = $user->id;
+            $transaction->amount = 0;
+            $transaction->save();
+
             $amount = 0;
             foreach ($request->detail as $row) {
                 if (!is_null($row['laundry_price'])) {
@@ -57,5 +58,24 @@ class TransactionController extends Controller
             DB::rollback();
             return response()->json(['status' => 'error', 'data' => $e->getMessage()]);
         }
+    }
+    public function edit($id)
+    {
+        $transaction = Transaction::with(['customer', 'payment', 'detail', 'detail.product'])->find($id);
+        return response()->json(['status' => 'success', 'data' => $transaction]);
+    }
+
+    public function completeItem(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|exists:detail_transactions,id'
+        ]);
+
+        $transaction = DetailTransaction::with(['transaction.customer'])->find($request->id);
+        $transaction->update(['status' => 1]);
+        $transaction->transaction->customer()->update(
+            ['point' => $transaction->transaction->customer->point + 1]
+        );
+        return response()->json(['status' => 'success']);
     }
 }
