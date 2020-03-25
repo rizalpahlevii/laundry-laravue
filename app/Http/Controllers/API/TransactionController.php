@@ -5,12 +5,30 @@ namespace App\Http\Controllers\API;
 use App\Transaction;
 use App\DetailTransaction;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TransactionCollection;
+use App\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
+    public function index()
+    {
+        $search = request()->q;
+        $user = request()->user();
+        $transaction = Transaction::with(['user', 'detail', 'customer'])->orderBy('created_at', 'DESC')->whereHas('customer', function ($q) use ($search) {
+            $q->where('name', 'LIKE', '%' . $search . '%');
+        });
+        if (in_array(request()->status, [0, 1])) {
+            $transaction = $transaction->where('status', request()->status);
+        }
+        if ($user->role != 0) {
+            $transaction = $transaction->where('user_id', $user->id);
+        }
+        $transaction = $transaction->paginate(10);
+        return new TransactionCollection($transaction);
+    }
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -53,7 +71,7 @@ class TransactionController extends Controller
             }
             $transaction->update(['amount' => $amount]);
             DB::commit();
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success', 'data' => $transaction]);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error', 'data' => $e->getMessage()]);
@@ -77,5 +95,42 @@ class TransactionController extends Controller
             ['point' => $transaction->transaction->customer->point + 1]
         );
         return response()->json(['status' => 'success']);
+    }
+    public function makePayment(Request $request)
+    {
+        $this->validate($request, [
+            'transaction_id' => 'required|exists:transactions,id',
+            'amount' => 'required|integer'
+        ]);
+        DB::beginTransaction();
+        try {
+            $transaction = Transaction::with(['customer'])->find($request->transaction_id);
+            $customer_change = 0;
+
+            if ($request->via_deposit) {
+                if ($transaction->customer->deposit < $request->amount) {
+                    return response()->json(['status' => 'error', 'data' => 'Deposit Kurang!']);
+                }
+                $transaction->customer()->update(['deposit' => $transaction->customer->deposit - $request->amount]);
+            } else {
+                if ($request->customer_change) {
+                    $customer_change = $request->amount - $transaction->amount;
+                    $transaction->customer()->update(['deposit' => $transaction->customer->deposit + $customer_change]);
+                }
+            }
+
+            Payment::create([
+                'transaction_id' => $transaction->id,
+                'amount' => $request->amount,
+                'customer_change' => $customer_change,
+                'type' => $request->via_deposit
+            ]);
+            $transaction->update(['status' => 1]);
+            DB::commit();
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => 'failed', 'data' => $e->getMessage()]);
+        }
     }
 }

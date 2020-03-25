@@ -4,7 +4,61 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6" v-if="transaction.status == 0">
-                        <!-- FORM PEMBAYARAN -->
+                        <div class="col-md-6" v-if="transaction.status == 0">
+                            <h4>Payment</h4>
+                            <hr />
+                            <div class="form-group">
+                                <label for="">Tagihan</label>
+                                <input
+                                    type="text"
+                                    :value="transaction.amount"
+                                    class="form-control"
+                                    readonly
+                                />
+                            </div>
+                            <div
+                                class="form-group"
+                                v-if="
+                                    transaction.customer &&
+                                        transaction.customer.deposit >=
+                                            transaction.amount
+                                "
+                            >
+                                <input type="checkbox" v-model="via_deposit" />
+                                Bayar Via Deposit?
+                            </div>
+                            <div class="form-group">
+                                <label for="">Jumlah Bayar</label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    v-model="amount"
+                                />
+                            </div>
+                            <p v-if="isCustomerChange">
+                                Kembalian: Rp {{ customerChangeAmount }}
+                            </p>
+                            <div class="form-group" v-if="isCustomerChange">
+                                <input
+                                    type="checkbox"
+                                    v-model="customer_change"
+                                    id="customer_change"
+                                />
+                                <label for="customer_change">
+                                    Kembalian Jadi Deposit?</label
+                                >
+                            </div>
+                            <p class="text-danger" v-if="payment_message">
+                                {{ payment_message }}
+                            </p>
+                            <button
+                                class="btn btn-primary btn-sm"
+                                :disabled="loading"
+                                @click="makePayment"
+                            >
+                                Bayar
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-6" v-if="transaction.customer">
                         <!-- MENAMPILKAN DETAIL INFORMASI CUSTOMER TERKAIT -->
@@ -136,7 +190,6 @@
 </template>
 <script>
 import { mapActions, mapState, mapMutations } from "vuex";
-
 export default {
     name: "DetailTransaction",
     created() {
@@ -148,16 +201,61 @@ export default {
             customer_change: false,
             loading: false,
             payment_message: null,
-            payment_success: false
+            payment_success: false,
+            via_deposit: false
         };
     },
     computed: {
         ...mapState("transaction", {
-            transactions: state => state.transaction
-        })
+            transaction: state => state.transaction
+        }),
+        isCustomerChange() {
+            if (!this.via_deposit) {
+                return this.amount > this.transaction.amount;
+            }
+            return false;
+        },
+        customerChangeAmount() {
+            if (!this.via_deposit) {
+                return parseInt(this.amount - this.transaction.amount);
+            }
+            return 0;
+        }
     },
     methods: {
-        ...mapActions("transaction", ["detailTransaction", "completeItem"]),
+        ...mapActions("transaction", [
+            "detailTransaction",
+            "completeItem",
+            "payment"
+        ]),
+        makePayment() {
+            if (this.amount < this.transaction.amount) {
+                this.payment_message = "Pembayaran Kurang Dari Tagihan";
+                return;
+            }
+            this.loading = true;
+            this.payment({
+                transaction_id: this.$route.params.id,
+                amount: this.amount,
+                customer_change: this.customer_change,
+                via_deposit: this.via_deposit
+            }).then(() => {
+                if (res.status == "success") {
+                    this.payment_success = true;
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.amount = null;
+                        this.customer_change = false;
+                        this.payment_message = null;
+                        this.via_deposit = false;
+                    }, 500);
+                    this.detailTransaction(this.$route.params.id);
+                } else {
+                    this.loading = false;
+                    alert(res.data);
+                }
+            });
+        },
         isDone(id) {
             this.$swal({
                 title: "Kamu Yakin?",
@@ -169,13 +267,20 @@ export default {
                 confirmButtonText: "Iya, Lanjutkan!"
             }).then(result => {
                 if (result.value) {
-                    //JIKA SETUJU MAKA KIRIM PERMINTAAN KE SERVER
                     this.completeItem({ id: id }).then(() => {
-                        //JIKA BERHASIL, MAKA LOAD DATA TRASANSAKSI TERBARU
                         this.detailTransaction(this.$route.params.id);
                     });
                 }
             });
+        }
+    },
+    watch: {
+        via_deposit() {
+            if (this.via_deposit) {
+                this.amount = this.transaction.amount;
+            } else {
+                this.amount = false;
+            }
         }
     }
 };
