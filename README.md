@@ -5,7 +5,7 @@ An Aplication laundry Made with Laravel + VueJS
 Use the package manager (composer and npm) for installing
 1. Do the following commands for installing
 ```bash
-git clone https://github.com/rizalpahlevi372/laundry-laravue.git
+git clone https://github.com/rizalpahlevii/laundry-laravue.git
 cd laundry-laravue
 composer install
 npm install
